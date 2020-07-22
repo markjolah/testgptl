@@ -1,0 +1,32 @@
+cmake_minimum_required(VERSION 3.12)
+project(testgptl LANGUAGES Fortran C CXX)
+
+find_package(ecbuild REQUIRED)
+find_package(GPTL REQUIRED)
+
+macro(print_interface_target target)
+    message(STATUS "[TARGET: ${target} Interface Properties]")
+    get_property(_VAR TARGET ${target} PROPERTY INTERFACE_INCLUDE_DIRECTORIES)
+    message(STATUS "  >${target} INTERFACE_INCLUDE_DIRECTORIES: ${_VAR}")
+    get_property(_VAR TARGET ${target} PROPERTY INTERFACE_LINK_LIBRARIES)
+    message(STATUS "  >${target} INTERFACE_LINK_LIBRARIES: ${_VAR}")
+    if(${CMAKE_VERSION} VERSION_GREATER "3.13.0")
+        get_property(_VAR TARGET ${target} PROPERTY INTERFACE_LINK_DIRECTORIES)
+        message(STATUS "  >${target} INTERFACE_LINK_DIRECTORIES: ${_VAR}")
+        get_property(_VAR TARGET ${target} PROPERTY INTERFACE_LINK_OPTIONS)
+        message(STATUS "  >${target} INTERFACE_LINK_OPTIONS: ${_VAR}")
+    endif()
+    get_property(_VAR TARGET ${target} PROPERTY INTERFACE_COMPILE_FEATURES)
+    message(STATUS "  >${target} INTERFACE_COMPILE_FEATURES: ${_VAR}")
+    get_property(_VAR TARGET ${target} PROPERTY INTERFACE_COMPILE_OPTIONS)
+    message(STATUS "  >${target} INTERFACE_COMPILE_OPTIONS: ${_VAR}")
+    get_property(_VAR TARGET ${target} PROPERTY INTERFACE_COMPILE_DEFINITIONS)
+    message(STATUS "  >${target} INTERFACE_COMPILE_DEFINITIONS: ${_VAR}")
+    message(STATUS "")
+endmacro()
+
+print_interface_target(GPTL::GPTL)
+
+add_executable(testgptl testgptl.cxx)
+
+target_link_libraries(testgptl PUBLIC GPTL::GPTL)
